@@ -1,6 +1,7 @@
 package com.example.guessthephrase
 
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import java.lang.Exception
 
 lateinit var tv1:TextView
 lateinit var tv2:TextView
+lateinit var hs:TextView
 lateinit var rv:RecyclerView
 lateinit var et:EditText
 lateinit var btn:Button
@@ -26,6 +28,8 @@ var convertPhrase = ""
 lateinit var al:ArrayList<Items>
 var phrase:String = "coding dojo"
 lateinit var starphrase:CharArray
+lateinit var sp:SharedPreferences
+var highscore = 0
 
 data class Items(val textval :String,val color:Int)
 
@@ -62,11 +66,16 @@ class MainActivity : AppCompatActivity() {
     fun initializeUI(){
         tv1 = findViewById(R.id.tv1)
         tv2 = findViewById(R.id.tv2)
+        hs = findViewById(R.id.highscore)
         rv = findViewById(R.id.rv)
         et = findViewById(R.id.et)
         btn = findViewById(R.id.btn)
         al = ArrayList()
+        sp = this.getSharedPreferences("myscore", MODE_PRIVATE)
+        var num = sp.getInt("highscore",0)
+        hs.text = "High Score :$num"
         convertPhraseToStar()
+
 
 
     }
@@ -97,11 +106,16 @@ class MainActivity : AppCompatActivity() {
 
             if (phrase == tv1.text.toString()) {
                 getalert("Guessed Letter", "Welldone..\n" + "Phrase is $phrase")
+                highscore = 10 - count
+                var spe = sp.edit()
+                spe.putInt("highscore",highscore)
+                spe.apply()
             }else{
                 convertToLetter(UserInt)
                 count --
                 al.add(Items("$count guessess remining", 2))
                 et.text.clear()
+
                 check()
             }
             et.text.clear()
