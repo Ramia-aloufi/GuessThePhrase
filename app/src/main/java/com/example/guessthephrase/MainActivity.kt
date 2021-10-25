@@ -1,10 +1,14 @@
 package com.example.guessthephrase
 
+import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -26,7 +30,8 @@ var count = 10
  var state:Int = 0
 var convertPhrase = ""
 lateinit var al:ArrayList<Items>
-var phrase:String = "coding dojo"
+lateinit var db:DBHelper
+ var phrase:String = ""
 lateinit var starphrase:CharArray
 lateinit var sp:SharedPreferences
 var highscore = 0
@@ -37,6 +42,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+         db = DBHelper(this)
+        var ml = db.retriveData()
+         phrase = ml.random()
 
         initializeUI()
         btn.setOnClickListener {
@@ -46,6 +54,27 @@ class MainActivity : AppCompatActivity() {
          check()
         Rvadapter()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.mymenu,menu)
+        return super.onCreateOptionsMenu(menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.ph -> {
+                int()
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+
+        }
+        return super.onOptionsItemSelected(item)
+
+    }
+    fun int(){val intent = Intent(this,MainActivity2::class.java)
+        startActivity(intent)}
     fun check(){
         if (count == 0) {
             getalert("Guessed Letter", "Game Over..\n" + "Phrase is $phrase")
@@ -60,7 +89,6 @@ class MainActivity : AppCompatActivity() {
         txt = ""
         et.text.clear()
         et.isFocusable = false
-        phrase = ""
     }
 
     fun initializeUI(){
