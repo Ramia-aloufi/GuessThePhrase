@@ -37,13 +37,16 @@ class DBHelper(context: Context):SQLiteOpenHelper(context,"detail.db",null,1) {
     fun retriveData():MutableList<String>{
         var al = mutableListOf<String>()
         var c : Cursor = sdb.query("phrase",null,null, null,null,null,null)
+       if(c.count == 0){
+           al = mutableListOf("coding dojo")
+       }else{
         if (c.moveToFirst()) {
             do {
                 var name =   c.getString(c.getColumnIndex("name"))
 
                 al.add(name)
             } while (c.moveToNext());
-        }
+        }}
         return al
     }
 }
